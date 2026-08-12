@@ -23,9 +23,6 @@ def user_login(form_data : OAuth2PasswordRequestForm = Depends(),
         return user_login_service(form_data,db)
 
 
-@User.get("/user/profile")
+@User.get("/user/profile", response_model=UserResponse)
 def user_profile_get(current_user = Depends(get_current_user)):
-        return {
-                "message" : "successfully get current user",
-                "current_user" : current_user
-        }
+        return current_user

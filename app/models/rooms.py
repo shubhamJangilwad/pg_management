@@ -6,7 +6,7 @@ class Room(Base):
     __tablename__ = "rooms"
 
     id = Column(Integer , primary_key= True , index=True)
-    building_id = Column(Integer , ForeignKey("pg_buildings.id"), nullable=False)
+    building_id = Column(Integer , ForeignKey("pg_building.id"), nullable=False)
     room_number = Column(String(10) , nullable=False)
     floor_number = Column(Integer , nullable=False)
     sharing_type = Column(Integer , nullable=False)
