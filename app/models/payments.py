@@ -2,8 +2,8 @@ from app.database import Base
 from sqlalchemy import Column , String , Integer , DateTime,ForeignKey , Boolean , Date
 from sqlalchemy.sql import func
 
-class Bed(Base):
-    __tablename__ = "beds"
+class Payment(Base):
+    __tablename__ = "payments"
 
     id = Column(Integer , primary_key= True , index=True)
     tenant_id = Column(Integer , ForeignKey("rooms.id"), nullable=False)
