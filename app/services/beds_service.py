@@ -19,7 +19,7 @@ def create_bed_service(body, current_user, db):
             detail="Room not found or you do not have access to this room"
         )
 
-    bed_count = db.query(Bed).filter(Bed.room_id == Room.id).count()
+    bed_count = db.query(Bed).filter(Bed.room_id == room.id).count()
 
     bed_exists = db.query(Bed).filter(Bed.room_id == room.id,Bed.bed_number == body.bed_number).first()
 
