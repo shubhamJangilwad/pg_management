@@ -6,6 +6,7 @@ from app.routers.room_router import Rooms
 from app.routers.room_pricing_router import RoomPricing
 from app.routers.bed_router import Beds
 from app.routers.tenants_router import Tenants
+from app.routers.payment_router import Payments
 
 app = FastAPI()
 
@@ -18,3 +19,4 @@ app.include_router(Rooms , tags=["Rooms"])
 app.include_router(RoomPricing , tags=["RoomPricing"])
 app.include_router(Beds , tags=["Beds"])
 app.include_router(Tenants, tags=["Tenants"])
+app.include_router(Payments, tags=["Payments"])

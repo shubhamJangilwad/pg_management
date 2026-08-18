@@ -10,7 +10,7 @@ from app.services.room_pricing_service import create_room_pricing_service
 
 RoomPricing = APIRouter() 
 
-@RoomPricing.post("/create/roomPri", response_model=RoomPricingResponse)
+@RoomPricing.post("/create/roompri", response_model=RoomPricingResponse)
 def create_room_pricing(body : RoomPricingCreate,
                         current_user = Depends(get_current_user),
                         db : Session = Depends(get_db)):
