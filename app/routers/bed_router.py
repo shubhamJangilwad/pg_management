@@ -1,10 +1,6 @@
 from fastapi import APIRouter , Depends 
 from sqlalchemy.orm import Session
-<<<<<<< Updated upstream
-from app.schemas.bed_schema import BedCreate , BedResponse
-=======
 from app.schemas.bed_schema import BedCreate , BedResponse , BedDetailResponse
->>>>>>> Stashed changes
 from app.database import get_db
 from app.services.auth import get_current_user
 from app.services.beds_service import create_bed_service
@@ -18,9 +14,6 @@ Beds = APIRouter()
 def create_bed(body : BedCreate,
                current_user = Depends(get_current_user),
                db : Session = Depends(get_db)):
-<<<<<<< Updated upstream
-        return create_bed_service(body,current_user,db)
-=======
         return create_bed_service(body,current_user,db)
 
 
@@ -45,4 +38,3 @@ def get_room_beds(
         current_user,
         db
     )
->>>>>>> Stashed changes

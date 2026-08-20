@@ -13,8 +13,6 @@ class BedResponse(BedCreate,BaseModel):
     deposite : int
     status : str
 
-<<<<<<< Updated upstream
-=======
 class BedDetailResponse(BaseModel):
     id: int
     room_id: int
@@ -25,7 +23,6 @@ class BedDetailResponse(BaseModel):
     building_id: int
     building_name: str
 
->>>>>>> Stashed changes
     model_config = {
         "from_attributes" : True
     }
