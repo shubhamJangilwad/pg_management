@@ -66,6 +66,7 @@ def create_bed_service(body, current_user, db):
             db.rollback()
             raise e
 
+
 def get_beds_service(current_user,db):
     beds = db.query(Bed
                     ).join(

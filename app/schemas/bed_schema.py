@@ -13,7 +13,7 @@ class BedResponse(BedCreate,BaseModel):
     deposite : int
     status : str
 
-class BedResponse2(BaseModel):
+class BedDetailResponse(BaseModel):
     id: int
     room_id: int
     bed_number: str

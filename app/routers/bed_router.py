@@ -1,9 +1,9 @@
 from fastapi import APIRouter , Depends 
 from sqlalchemy.orm import Session
-from app.schemas.bed_schema import BedCreate , BedResponse , BedResponse2
+from app.schemas.bed_schema import BedCreate , BedResponse , BedDetailResponse
 from app.database import get_db
 from app.services.auth import get_current_user
-from app.services.beds_service import create_bed_service , get_beds_service , get_room_beds_service
+from app.services.beds_service import create_bed_service, get_beds_service, get_room_beds_service
 
 
 
@@ -24,7 +24,7 @@ def get_beds(
         return get_beds_service(current_user,db)
 
 @Beds.get("/building/{building_id}/room/{room_id}/beds",
-    response_model=list[BedResponse2]
+    response_model=list[BedDetailResponse]
 )
 def get_room_beds(
     building_id: int,
