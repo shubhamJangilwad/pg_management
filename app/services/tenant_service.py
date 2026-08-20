@@ -96,3 +96,27 @@ def get_tenants_service(current_user,db):
 
      else:
           return tenants
+
+def get_tenant_by_id_service(tenant_id,current_user,db):
+    tenant = db.query(Tenant).join(
+         Bed,
+         Tenant.bed_id == Bed.id
+         ).join(
+              Room,
+              Bed.room_id == Room.id
+         ).join(
+              Building,
+              Room.building_id == Building.id
+         ).filter(
+              Tenant.id == tenant_id,
+              Building.owner_id == current_user.id
+         ).first()
+
+    if tenant:
+         return tenant
+
+    else:
+         raise HTTPException(
+              status_code=404,
+              detail="tenant not found"
+         )
