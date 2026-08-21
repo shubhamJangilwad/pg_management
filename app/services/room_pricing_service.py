@@ -31,3 +31,15 @@ def create_room_pricing_service(body,current_user,db):
         except Exception as e:
             db.rollback()
             print(e)
+
+def update_room_pricing_service(body,current_user,db):
+    update_pric = db.query(RoomPricing).filter(RoomPricing.id == body.pricing_id,
+                                               RoomPricing.owner_id == current_user.id).first()
+
+    if not update_pric:
+        raise HTTPException(
+            status_code= 404,
+            detail= "pricing_id Not Found"
+        )
+
+    else:
