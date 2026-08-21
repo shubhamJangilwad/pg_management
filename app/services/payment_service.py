@@ -106,4 +106,53 @@ def tenant_checkout_service(body,current_user,db):
         except Exception as e:
             db.rollback()
             print(e)
-            
+
+
+def get_payments_service(current_user,db):
+    payments = db.query(Payment).join(
+        Tenant,
+        Payment.tenant_id == Tenant.id
+    ).join(
+        Bed,
+        Tenant.bed_id == Bed.id
+    ).join(
+        Room,
+        Bed.room_id == Room.id
+    ).join(
+        Building,
+        Room.building_id == Building.id
+    ).filter(
+        Building.owner_id == current_user.id).all()
+
+    if not payments:
+        raise HTTPException(
+            status_code= 404,
+            detail= "Payments Not Found"
+        )
+
+    result = {}
+    for payment in payments:
+        if payment.tenant_id not in result:
+            result[payment.tenant_id] = {
+                "tenant_id": payment.tenant_id,
+                "rent_payments": [],
+                "refund": None
+            }
+
+        if payment.payment_status == "REFUNDED":
+            result[payment.tenant_id]["refund"] = {
+                "payment_month": payment.payment_month,
+                "maintenance_charge": payment.maintenance_charge,
+                "refund_amount": payment.refund_amount,
+                "payment_status": payment.payment_status
+            }
+
+        else:
+            result[payment.tenant_id]["rent_payments"].append({
+                "payment_month": payment.payment_month,
+                "amount": payment.amount,
+                "payment_status": payment.payment_status
+            })
+
+
+    return list(result.values())
