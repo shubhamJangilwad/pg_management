@@ -33,7 +33,7 @@ def create_room_pricing_service(body,current_user,db):
             print(e)
 
 def update_room_pricing_service(body,current_user,db):
-    update_pric = db.query(RoomPricing).filter(RoomPricing.id == body.pricing_id,
+    update_pric = db.query(RoomPricing).filter(RoomPricing.id == body.room_pri_id,
                                                RoomPricing.owner_id == current_user.id).first()
 
     if not update_pric:
@@ -43,3 +43,15 @@ def update_room_pricing_service(body,current_user,db):
         )
 
     else:
+        try:
+            update_pric.monthly_rent = body.monthly_rent,
+            update_pric.deposite = body.deposite
+
+        
+            db.commit()
+            db.refresh(update_pric)
+            return update_pric
+
+        except Exception as e:
+            db.rollback()
+            raise e

@@ -13,6 +13,7 @@ class RoomPricingResponse(RoomPricingCreate,BaseModel):
 
 
 class RoomPricingUpdateSchema(BaseModel):
+    room_pri_id : int
     monthly_rent : int
     deposite : int
 
