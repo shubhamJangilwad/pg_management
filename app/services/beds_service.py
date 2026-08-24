@@ -3,15 +3,19 @@ from app.models.beds import Bed
 from app.models.rooms import Room
 from app.models.room_pricing import RoomPricing
 from app.models.buildings import Building
+from sqlalchemy import and_
 
 
 
 
 def create_bed_service(body, current_user, db):
 
-    room = db.query(Room).join(Building,Room.building_id == Building.id).filter(Room.id == body.room_id,
-        Building.owner_id == current_user.id
-    ).first()
+    room = db.query(Room
+                    ).join(
+                        Building,Room.building_id == Building.id
+                        ).filter(
+                            Room.id == body.room_id,
+                            Building.owner_id == current_user.id).first()
 
     if not room:
         raise HTTPException(
@@ -50,10 +54,7 @@ def create_bed_service(body, current_user, db):
         try:
             bed = Bed(
                 room_id = body.room_id,
-                bed_number = body.bed_number,
-                monthly_rent = pricing.monthly_rent,
-                deposite = pricing.deposite
-
+                bed_number = body.bed_number
             )
 
             db.add(bed)
@@ -64,40 +65,60 @@ def create_bed_service(body, current_user, db):
 
         except Exception as e:
             db.rollback()
-            raise e
+            print(e)
 
 
 def get_beds_service(current_user,db):
-    beds = db.query(Bed
+    beds = db.query(Bed,
+                    RoomPricing.monthly_rent,
+                    RoomPricing.deposite
                     ).join(
-                        Room, Bed.room_id == Room.id
+                        Room,
+                        Bed.room_id == Room.id
                         ).join(
                             Building,
                             Room.building_id == Building.id
-                        ).filter(
+                            ).join(
+                                 RoomPricing,
+                                 and_(
+                                     RoomPricing.owner_id == Building.owner_id,
+                                     RoomPricing.sharing_type == Room.sharing_type
+                                      )
+                            ).filter(
                             Building.owner_id == current_user.id
                         ).all()
 
-    if beds:
-        return beds
+    if not beds:
+        raise HTTPException(
+            status_code=404,
+            detail="beds not found"
+        )
 
     else:
-        raise HTTPException(
-            status_code= 404,
-            detail= "beds not found"
-        )
+        result = []
+
+        for bed, monthly_rent, deposite in beds:
+            result.append({
+                "id": bed.id,
+                "room_id": bed.room_id,
+                "bed_number": bed.bed_number,
+                "monthly_rent": monthly_rent,
+                "deposite": deposite,
+                "status": bed.status
+            })
+
+    return result
 
 
 def get_room_beds_service(building_id,
         room_id,
         current_user,
         db):
-
     get_bui_room_b = db.query(Bed.id,
     Bed.room_id,
     Bed.bed_number,
-    Bed.monthly_rent,
-    Bed.deposite,
+    RoomPricing.monthly_rent,
+    RoomPricing.deposite,
     Bed.status,
     Building.id.label("building_id"),
     Building.building_name
@@ -106,17 +127,37 @@ def get_room_beds_service(building_id,
                         ).join(
                             Building,
                             Room.building_id == Building.id
-                        ).filter(
-                            Bed.room_id == room_id,
-                            Room.building_id == building_id,
-                            Building.owner_id == current_user.id
-                        ).all()
+                            ).join(
+                                RoomPricing,
+                                and_(
+                                    RoomPricing.owner_id == Building.owner_id,
+                                    RoomPricing.sharing_type == Room.sharing_type   
+                                )
+                                ).filter(
+                                    Bed.room_id == room_id,
+                                    Room.building_id == building_id,
+                                    Building.owner_id == current_user.id
+                                    ).all()
 
-    if get_bui_room_b:
-        return get_bui_room_b
+    if not get_bui_room_b:
+        raise HTTPException(
+            status_code=404,
+            detail="No Bed Found"
+        )
 
     else:
-        raise HTTPException(
-            status_code= 404 ,
-            detail= "no bed found"
-        )
+       result = []
+
+       for bed_id, db_room_id, bed_number, monthly_rent, deposite, status, db_building_id, building_name in get_bui_room_b:
+           result.append({
+               "id" : bed_id,
+               "room_id" : db_room_id,
+               "bed_number" : bed_number,
+               "monthly_rent" : monthly_rent,
+               "deposite" : deposite,
+               "status" : status,
+               "building_id" :db_building_id,
+               "building_name" : building_name
+           })
+
+    return result

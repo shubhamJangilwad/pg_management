@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 class RoomCreate(BaseModel):
     building_id : int
-    room_number : int
+    room_number : str
     floor_number : str
     sharing_type : int
 
