@@ -61,7 +61,14 @@ def create_bed_service(body, current_user, db):
             db.commit()
             db.refresh(bed)
 
-            return bed
+            return {
+        "id": bed.id,
+        "room_id": bed.room_id,
+        "bed_number": bed.bed_number,
+        "monthly_rent": pricing.monthly_rent,
+        "deposite": pricing.deposite,
+        "status": bed.status
+    }
 
         except Exception as e:
             db.rollback()

@@ -78,7 +78,9 @@ def create_tenant_service(body,current_user,db):
             raise e
 
 def get_tenants_service(current_user,db):
-     tenants = db.query(Bed).join(
+     tenants = db.query(Tenant).join(
+          Bed,
+          Tenant.bed_id == Bed.id).join(
              Room,
              Bed.room_id == Room.id
          ).join(
