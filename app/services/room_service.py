@@ -34,11 +34,12 @@ def create_room_service(body,current_uer,db):
                 sharing_type = body.sharing_type
                 )
 
-            db.add(room)
+            building.rooms.append(room)
+            db.add(building)
             db.commit()
-            db.refresh(room)
+            db.refresh(building)
 
-            return room
+            return building
 
         except Exception as e:
             db.rollback()

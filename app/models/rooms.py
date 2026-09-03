@@ -1,10 +1,12 @@
 from app.database import Base
 from sqlalchemy import Column , String , Integer , DateTime,ForeignKey , Boolean
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 
 class Room(Base):
     __tablename__ = "rooms"
 
+    building = relationship("Building",back_populates="rooms")
     id = Column(Integer , primary_key= True , index=True)
     building_id = Column(Integer , ForeignKey("pg_building.id"), nullable=False)
     room_number = Column(String(10) , nullable=False)
